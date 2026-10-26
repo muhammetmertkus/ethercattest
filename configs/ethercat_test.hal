@@ -1,0 +1,38 @@
+# ==============================================================================
+# LinuxCNC HAL Configuration - Optimized for EtherCAT 1-Axis Single Drive Test
+# Drive: Delta ASDA-A3-E EtherCAT AC Servo Sürücü (Position: 2, VID: 0x000001dd, PID: 0x00001030)
+# Encoder: 23-Bit (8388608 PPR) | Hatve: 5.0 mm
+# ==============================================================================
+
+# 1. Load Realtime Components
+loadrt [KINS]KINEMATICS
+loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=1
+loadusr -W lcec_conf [CONFIG_DIR]/ethercat-conf.xml
+loadrt lcec
+loadrt pid names=pid.0
+loadrt cia402 names=cia402.0
+
+# 2. Add Functions to Servo Thread (1ms Loop)
+addf lcec.read-all servo-thread
+addf motion-command-handler servo-thread
+addf motion-controller servo-thread
+addf pid.0.do-pid-calcs servo-thread
+addf cia402.0.update servo-thread
+addf lcec.write-all servo-thread
+
+# 3. CiA402 State Machine & Drive Enable
+net drive-enable       joint.0.amp-enable-out => cia402.0.enable
+net drive-status       lcec.0.2.cia-statusword => cia402.0.statusword
+net drive-control      cia402.0.controlword => lcec.0.2.cia-controlword
+net drive-opmode-cmd   cia402.0.opmode => lcec.0.2.opmode
+net drive-is-enabled   cia402.0.drv-act-enable => joint.0.amp-is-enabled
+
+# 4. Position & Velocity Commands
+net axis-pos-cmd       joint.0.motor-pos-cmd => cia402.0.pos-cmd
+net drive-pos-target   cia402.0.drv-target-pos => lcec.0.2.target-position
+net drive-pos-fb       lcec.0.2.actual-position => cia402.0.drv-actual-pos
+net axis-pos-fb        cia402.0.pos-fb => joint.0.motor-pos-fb
+
+# 5. Fault & Alarm Handling (0x603F Error Code)
+net drive-fault        cia402.0.drv-fault => joint.0.amp-fault-in
+net drive-error-code   lcec.0.2.error-code

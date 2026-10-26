@@ -1,0 +1,66 @@
+:root {
+  --surface-app: #f7f4ea;
+  --surface-panel: #fffdf7;
+  --surface-card: #ede9db;
+  --surface-hover: #e4dfd0;
+  --surface-control: #ffffff;
+  
+  --accent: #b46505;
+  --accent-soft: rgba(180, 101, 5, 0.12);
+  --accent-strong: #8c4e03;
+  --on-accent: #ffffff;
+  
+  --success: #257a4a;
+  --success-soft: rgba(37, 122, 74, 0.12);
+  --warning: #b45309;
+  --warning-soft: rgba(180, 83, 9, 0.12);
+  --danger: #b91c1c;
+  --danger-soft: rgba(185, 28, 28, 0.12);
+  
+  --line: #dfd7c5;
+  --line-strong: #c4b9a1;
+  --text: #29231b;
+  --text-dim: #6e6252;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--surface-app);
+  color: var(--text);
+  font-family: var(--font-family);
+  user-select: none;
+  overflow-x: hidden;
+  height: 100vh;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.15s ease;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+input, select {
+  font-family: inherit;
+  background: var(--surface-control);
+  border: 1px solid var(--line);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--accent);
+}
